@@ -1,0 +1,54 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: bitnami/laravel
+    steps:
+      - checkout
+      - run: sudo apt-get update
+      - run: sudo apt-get install netcat -y
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "composer.json" }}
+            - v1-dependencies-
+
+      - run: composer install -n --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "composer.json" }}
+          paths:
+            - ./vendor
+  deploy:
+#     machine:
+#       enabled: true
+    docker:
+      - image: bitnami/laravel
+    steps:
+#       - add_ssh_keys:
+#           fingerprints:
+#             - "69:28:e8:ec:43:d5:17:03:bf:28:f3:60:56:91:60:4a"
+#       - run:
+#           name: Setup
+#           command: |
+#             ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+#       - run:
+#           name: Ssh add
+#           command: |
+#             ssh-add -l
+#             cd ~/.ssh && ls
+      - run:    
+          name: Deploy
+          command: |
+            ssh -v $SSH_USER@$SSH_HOST "cd /var/www/sites/lara6-docker && sudo git pull"
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+              - build
+          filters:
+            branches:
+              only: master
+        

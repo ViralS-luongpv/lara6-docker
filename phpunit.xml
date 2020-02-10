@@ -18,6 +18,10 @@
         <testsuite name="Feature">
             <directory suffix="Test.php">./tests/Feature</directory>
         </testsuite>
+
+        <testsuite name="Repositories">
+            <directory suffix="Test.php">./tests/Repositories</directory>
+        </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
@@ -28,10 +32,15 @@
         <server name="APP_ENV" value="testing"/>
         <server name="BCRYPT_ROUNDS" value="4"/>
         <server name="CACHE_DRIVER" value="array"/>
-        <server name="DB_CONNECTION" value="sqlite"/>
-        <server name="DB_DATABASE" value=":memory:"/>
         <server name="MAIL_DRIVER" value="array"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
+        <server name="DB_CONNECTION" value="mysql_testing"/>
+        <server name="DB_DATABASE" value="homestead"/>
+        <server name="DB_HOST" value="db-testing"/>
     </php>
+    <logging>
+        <log type="coverage-html" target="./__storage"
+             lowUpperBound="50" highLowerBound="80" />
+    </logging>
 </phpunit>

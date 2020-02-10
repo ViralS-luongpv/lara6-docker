@@ -14,6 +14,8 @@ ARG TZ
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /composer
 
+RUN apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev
+
 RUN apk update && \
   apk add --update --no-cache --virtual=.build-dependencies \
     autoconf=~2.69 \
@@ -31,7 +33,7 @@ RUN apk update && \
   pecl install xdebug && \
   git clone https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis && \
   apk del .build-dependencies && \
-  docker-php-ext-install intl pdo_mysql mbstring zip bcmath redis && \
+  docker-php-ext-install intl pdo_mysql gd mbstring zip bcmath redis && \
   docker-php-ext-enable xdebug && \
   mkdir $PSYSH_DIR && curl $PHP_MANUAL_URL -o $PSYSH_PHP_MANUAL && \
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
